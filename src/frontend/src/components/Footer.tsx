@@ -19,10 +19,11 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">🌸</span>
-              <span className="text-white font-bold text-xl tracking-tight">
-                PhoolStop
-              </span>
+              <img
+                src="/assets/phoolstop logo.svg"
+                alt="PhoolStop"
+                className="h-8 w-auto brightness-0 invert"
+              />
             </div>
             <p className="text-white/70 text-sm leading-relaxed">
               Direct from farms. Delivered to your business.
