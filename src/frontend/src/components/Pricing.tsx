@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 const plans = [
   {
     name: "Starter",
-    price: "₹10,000 – ₹15,000",
+    price: "₹5,000 – ₹7,000",
     period: "/month",
     tagline: "Best for temples, small hotels, and standalone restaurants.",
     features: [
@@ -19,7 +19,7 @@ const plans = [
   },
   {
     name: "Growth",
-    price: "₹20,000 – ₹30,000",
+    price: "₹15,000 – ₹20,000",
     period: "/month",
     tagline: "Corporates, mid-size hotels, and multi-outlet cafes.",
     badge: "Most Popular",
@@ -35,7 +35,7 @@ const plans = [
   },
   {
     name: "Enterprise",
-    price: "₹50,000+",
+    price: "₹2,00,000 – ₹4,00,000",
     period: "/month",
     tagline: "Large hotel groups, banquet venues, and event companies.",
     features: [

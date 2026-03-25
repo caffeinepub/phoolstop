@@ -32,7 +32,7 @@ export default function Navbar() {
           {/* Logo */}
           <a href="#hero" className="flex items-center gap-2 shrink-0">
             <img
-              src="/assets/phoolstop logo.svg"
+              src="/assets/uploads/Screenshot-2026-03-23-at-6.29.05-PM-1.png"
               alt="PhoolStop"
               className="h-8 md:h-10 w-auto"
             />

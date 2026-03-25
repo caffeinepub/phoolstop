@@ -20,9 +20,9 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <img
-                src="/assets/phoolstop logo.svg"
+                src="/assets/uploads/Screenshot-2026-03-23-at-6.29.05-PM-1.png"
                 alt="PhoolStop"
-                className="h-8 w-auto brightness-0 invert"
+                className="h-8 w-auto"
               />
             </div>
             <p className="text-white/70 text-sm leading-relaxed">
