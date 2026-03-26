@@ -9,17 +9,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  CheckCircle2,
-  Clock,
-  Loader2,
-  Mail,
-  MessageCircle,
-} from "lucide-react";
+import { Clock, Mail, MessageCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
-import type { BusinessType } from "../backend.d";
-import { useSubmitEnquiry } from "../hooks/useQueries";
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -29,39 +21,20 @@ export default function Contact() {
     budgetRange: "",
     message: "",
   });
-  const [submitted, setSubmitted] = useState(false);
-  const { mutate, isPending, isError } = useSubmitEnquiry();
-
-  function buildBusinessType(type: string): BusinessType {
-    switch (type) {
-      case "hotel":
-        return { __kind__: "hotel", hotel: null };
-      case "restaurant":
-        return { __kind__: "restaurant", restaurant: null };
-      case "temple":
-        return { __kind__: "temple", temple: null };
-      case "corporate":
-        return { __kind__: "corporate", corporate: null };
-      default:
-        return { __kind__: "other", other: type };
-    }
-  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    mutate(
-      {
-        businessName: form.businessName,
-        businessType: buildBusinessType(form.businessType),
-        city: form.city,
-        budgetRange: form.budgetRange,
-        message: form.message,
-        timestamp: BigInt(Date.now()),
-      },
-      {
-        onSuccess: () => setSubmitted(true),
-      },
-    );
+    const lines = [
+      "*New Enquiry from PhoolStop Website*",
+      `Business Name: ${form.businessName}`,
+      form.businessType ? `Business Type: ${form.businessType}` : "",
+      form.city ? `City: ${form.city}` : "",
+      form.budgetRange ? `Monthly Budget: ${form.budgetRange}` : "",
+      form.message ? `Message: ${form.message}` : "",
+    ]
+      .filter(Boolean)
+      .join("%0A");
+    window.open(`https://wa.me/919607317878?text=${lines}`, "_blank");
   }
 
   return (
@@ -101,168 +74,135 @@ export default function Contact() {
             className="lg:col-span-3"
           >
             <div className="bg-white rounded-2xl p-6 md:p-8 shadow-card">
-              {submitted ? (
-                <div
-                  data-ocid="contact.success_state"
-                  className="flex flex-col items-center justify-center py-12 text-center"
-                >
-                  <CheckCircle2
-                    size={48}
-                    className="mb-4"
-                    style={{ color: "#35502A" }}
-                  />
-                  <h3
-                    className="text-xl font-semibold mb-2"
-                    style={{ color: "#1A1A1A" }}
-                  >
-                    Thanks! We'll be in touch within 24 hours.
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Keep an eye on your email and WhatsApp.
-                  </p>
-                </div>
-              ) : (
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-5"
-                  data-ocid="contact.modal"
-                >
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label
-                        htmlFor="businessName"
-                        className="text-sm font-medium"
-                      >
-                        Business Name *
-                      </Label>
-                      <Input
-                        id="businessName"
-                        data-ocid="contact.input"
-                        placeholder="e.g. The Orchid Hotel"
-                        required
-                        value={form.businessName}
-                        onChange={(e) =>
-                          setForm((p) => ({
-                            ...p,
-                            businessName: e.target.value,
-                          }))
-                        }
-                        className="rounded-lg"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-sm font-medium">
-                        Business Type *
-                      </Label>
-                      <Select
-                        required
-                        onValueChange={(v) =>
-                          setForm((p) => ({ ...p, businessType: v }))
-                        }
-                      >
-                        <SelectTrigger
-                          data-ocid="contact.select"
-                          className="rounded-lg"
-                        >
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="hotel">Hotel</SelectItem>
-                          <SelectItem value="restaurant">Restaurant</SelectItem>
-                          <SelectItem value="temple">Temple</SelectItem>
-                          <SelectItem value="corporate">Corporate</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="city" className="text-sm font-medium">
-                        City
-                      </Label>
-                      <Input
-                        id="city"
-                        data-ocid="contact.input"
-                        placeholder="Mumbai"
-                        value={form.city}
-                        onChange={(e) =>
-                          setForm((p) => ({ ...p, city: e.target.value }))
-                        }
-                        className="rounded-lg"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-sm font-medium">
-                        Monthly Budget Range
-                      </Label>
-                      <Select
-                        onValueChange={(v) =>
-                          setForm((p) => ({ ...p, budgetRange: v }))
-                        }
-                      >
-                        <SelectTrigger
-                          data-ocid="contact.select"
-                          className="rounded-lg"
-                        >
-                          <SelectValue placeholder="Select range" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="10k-15k">₹10k – ₹15k</SelectItem>
-                          <SelectItem value="20k-30k">₹20k – ₹30k</SelectItem>
-                          <SelectItem value="50k+">₹50k+</SelectItem>
-                          <SelectItem value="not-sure">Not Sure</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-5"
+                data-ocid="contact.modal"
+              >
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <Label htmlFor="message" className="text-sm font-medium">
-                      Message (optional)
+                    <Label
+                      htmlFor="businessName"
+                      className="text-sm font-medium"
+                    >
+                      Business Name *
                     </Label>
-                    <Textarea
-                      id="message"
-                      data-ocid="contact.textarea"
-                      placeholder="Tell us about your requirements — flower types, frequency, volumes..."
-                      rows={4}
-                      value={form.message}
+                    <Input
+                      id="businessName"
+                      data-ocid="contact.input"
+                      placeholder="e.g. The Orchid Hotel"
+                      required
+                      value={form.businessName}
                       onChange={(e) =>
-                        setForm((p) => ({ ...p, message: e.target.value }))
+                        setForm((p) => ({
+                          ...p,
+                          businessName: e.target.value,
+                        }))
                       }
-                      className="rounded-lg resize-none"
+                      className="rounded-lg"
                     />
                   </div>
-
-                  {isError && (
-                    <p
-                      data-ocid="contact.error_state"
-                      className="text-sm text-red-600"
+                  <div className="space-y-1.5">
+                    <Label className="text-sm font-medium">
+                      Business Type *
+                    </Label>
+                    <Select
+                      required
+                      onValueChange={(v) =>
+                        setForm((p) => ({ ...p, businessType: v }))
+                      }
                     >
-                      Something went wrong. Please try again or reach us via
-                      WhatsApp.
-                    </p>
-                  )}
+                      <SelectTrigger
+                        data-ocid="contact.select"
+                        className="rounded-lg"
+                      >
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Hotel">Hotel</SelectItem>
+                        <SelectItem value="Restaurant">Restaurant</SelectItem>
+                        <SelectItem value="Temple">Temple</SelectItem>
+                        <SelectItem value="Corporate">Corporate</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
 
-                  <Button
-                    type="submit"
-                    data-ocid="contact.submit_button"
-                    disabled={isPending}
-                    className="w-full rounded-full font-semibold py-3 text-white"
-                    style={{ backgroundColor: "#35502A" }}
-                  >
-                    {isPending ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      "Send Enquiry"
-                    )}
-                  </Button>
-                </form>
-              )}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="city" className="text-sm font-medium">
+                      City
+                    </Label>
+                    <Input
+                      id="city"
+                      data-ocid="contact.input"
+                      placeholder="Mumbai"
+                      value={form.city}
+                      onChange={(e) =>
+                        setForm((p) => ({ ...p, city: e.target.value }))
+                      }
+                      className="rounded-lg"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-sm font-medium">
+                      Monthly Budget Range
+                    </Label>
+                    <Select
+                      onValueChange={(v) =>
+                        setForm((p) => ({ ...p, budgetRange: v }))
+                      }
+                    >
+                      <SelectTrigger
+                        data-ocid="contact.select"
+                        className="rounded-lg"
+                      >
+                        <SelectValue placeholder="Select range" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="₹5,000 – ₹7,000 (Starter)">
+                          ₹5,000 – ₹7,000 (Starter)
+                        </SelectItem>
+                        <SelectItem value="₹15,000 – ₹20,000 (Growth)">
+                          ₹15,000 – ₹20,000 (Growth)
+                        </SelectItem>
+                        <SelectItem value="₹2,00,000 – ₹4,00,000 (Enterprise)">
+                          ₹2,00,000 – ₹4,00,000 (Enterprise)
+                        </SelectItem>
+                        <SelectItem value="Not Sure">Not Sure</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="message" className="text-sm font-medium">
+                    Message (optional)
+                  </Label>
+                  <Textarea
+                    id="message"
+                    data-ocid="contact.textarea"
+                    placeholder="Tell us about your requirements — flower types, frequency, volumes..."
+                    rows={4}
+                    value={form.message}
+                    onChange={(e) =>
+                      setForm((p) => ({ ...p, message: e.target.value }))
+                    }
+                    className="rounded-lg resize-none"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  data-ocid="contact.submit_button"
+                  className="w-full rounded-full font-semibold py-3 text-white flex items-center justify-center gap-2"
+                  style={{ backgroundColor: "#25D366" }}
+                >
+                  <MessageCircle size={18} />
+                  Send via WhatsApp
+                </Button>
+              </form>
             </div>
           </motion.div>
 
